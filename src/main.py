@@ -1,6 +1,7 @@
 from textnode import TextNode, TextType
 import os, shutil
 from page_generator import generate_page_rec, generate_page
+import sys
 
 def copy_tree(source, destination):
     source, destination = os.path.abspath(source), os.path.abspath(destination)
@@ -19,11 +20,13 @@ def copy_tree(source, destination):
 
 
 def main():
-
-    print(os.path.exists(os.path.abspath("./public")))
-    if os.path.exists("/public"):
-        shutil.rmtree("/public")
-    copy_tree("./static", "./public")
-    generate_page_rec("./content", "./template.html", "./public")
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = '/'
+    if os.path.exists("/docs"):
+        shutil.rmtree("/docs")
+    copy_tree("./static", "./docs")
+    generate_page_rec("./content", "./template.html", "./docs", basepath)
 
 main()
