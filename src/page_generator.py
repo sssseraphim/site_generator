@@ -20,25 +20,33 @@ def generate_page(from_path, template_path, dest_path):
     node = markdown_to_html_node(markdown)
     template = template.replace("{{ Title }}", extract_title(markdown))
     template = template.replace("{{ Content }}", node.to_html())
-    
-    new = os.path.join(dest_path, Path(from_path).stem)
-    os.makedirs(os.path.dirname(new), exist_ok=True)
-    with open(new, 'a') as dest:
+    dest_file = os.path.join(dest_path, Path(from_path).stem)
+    dest_file += ".html"
+    print(dest_file, "file")
+    with open(dest_file, 'a') as dest:
         dest.write(template)
 
 def generate_page_rec(dir_path_content, template_path, dest_dir_path):
     content_path = os.path.abspath(dir_path_content)
     dest_path = os.path.abspath(dest_dir_path)
-    if os.path.isfile(content_path):
-        generate_page(content_path, template_path, dest_dir_path)
-    else:
-        for path in os.listdir(dir_path_content):
-            c = os.path.join(content_path, path)
-            if os.path.isfile(c):
-                generate_page(c, template_path, dest_path)
-            else:
-                c, d = os.path.join(content_path, path), os.path.join(dest_path, path)
-                generate_page_rec(c, template_path, d)
+    for p in os.listdir(content_path):
+        path = os.path.join(content_path, p)
+        if os.path.isfile(path):
+            generate_page(os.path.join(content_path, p), template_path, dest_path)
+        else:
+            dest = os.path.join(dest_path, p)
+            os.mkdir(dest)
+            generate_page_rec(os.path.join(content_path, p), template_path, dest)
+
+        
+        
+
+    
+        
+
+
+                 
+        
         
     
 
